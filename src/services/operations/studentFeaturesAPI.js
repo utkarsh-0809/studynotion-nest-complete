@@ -14,7 +14,7 @@ const {
 
 // Load the Razorpay SDK from the CDN
 function loadScript(src) {
-// $&
+  console.log("in script")
   return new Promise((resolve) => {
     const script = document.createElement("script")
     script.src = src
@@ -39,7 +39,7 @@ export async function BuyCourse(
   const toastId = toast.loading("Loading...")
   try {
     // Loading the script of Razorpay SDK
-// $&
+    console.log("at first step")
     const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js")
 
     if (!res) {
@@ -64,11 +64,11 @@ export async function BuyCourse(
     if (!orderResponse.data.success) {
       throw new Error(orderResponse.data.message)
     }
-// $&
-// $&
+    console.log(" before creating the options...")
+    console.log("it cant bePAYMENT RESPONSE FROM BACKEND............", orderResponse.data)
 
     // Opening the Razorpay SDK
-// $&
+    console.log("creating the options...")
     const options = {
       key: "rzp_test_FygXdONEKJQmc4",
       currency: orderResponse.data.data.currency,
@@ -86,16 +86,16 @@ export async function BuyCourse(
         verifyPayment({ ...response, courses }, token, navigate, dispatch)
       },
     }
-// $&
+    console.log(options)
     const paymentObject = new window.Razorpay(options)
 
     paymentObject.open()
     paymentObject.on("payment.failed", function (response) {
       toast.error("Oops! Payment Failed.")
-// $&
+      console.log(response.error)
     })
   } catch (error) {
-// $&
+    console.log("PAYMENT API ERROR............", error)
     toast.error("Could Not make Payment.")
   }
   toast.dismiss(toastId)
@@ -109,7 +109,8 @@ async function verifyPayment(bodyData, token, navigate, dispatch) {
     const response = await apiConnector("POST", COURSE_VERIFY_API, bodyData, {
       Authorization: `Bearer ${token}`,
     })
-// $&
+
+    console.log("VERIFY PAYMENT RESPONSE FROM BACKEND............", response)
 
     if (!response.data.success) {
       throw new Error(response.data.message)
@@ -119,7 +120,7 @@ async function verifyPayment(bodyData, token, navigate, dispatch) {
     navigate("/dashboard/enrolled-courses")
     dispatch(resetCart())
   } catch (error) {
-// $&
+    console.log("PAYMENT VERIFY ERROR............", error)
     toast.error("Could Not Verify Payment.")
   }
   toast.dismiss(toastId)
@@ -142,6 +143,6 @@ async function sendPaymentSuccessEmail(response, amount, token) {
       }
     )
   } catch (error) {
-// $&
+    console.log("PAYMENT SUCCESS EMAIL ERROR............", error)
   }
 }

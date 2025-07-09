@@ -27,11 +27,16 @@ export class AuthController {
     return this.authService.signup(createUserDto);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Post('/resetPassword')
-  changepassword(@Body() createUserDto: any) {
-    return this.authService.resetPassword(createUserDto);
+  // @UseGuards(JwtAuthGuard)
+  @Post('/reset-password')
+  changepassword(@Req() req:any) {
+    return this.authService.resetPassword(req);
   }
+   @Post('/reset-password-token')
+  resettoken(@Req() req:any) {
+    return this.authService.resetPasswordToken(req);
+  }
+
 
   @UseGuards(JwtAuthGuard)
   @Post('/changepassword')

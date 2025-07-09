@@ -1,4 +1,4 @@
-import { ExecutionContext, HttpException, HttpStatus, Injectable, Req, UnauthorizedException } from '@nestjs/common';
+import { ExecutionContext, HttpException, HttpStatus, Injectable, NotFoundException, Req, UnauthorizedException } from '@nestjs/common';
 import { OtpService } from 'src/otp/otp.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserService } from 'src/user/user.service';
@@ -167,12 +167,15 @@ export class AuthService {
   }
 
   async login(user: any) {
+    
+    // throw new UnauthorizedException("testing this")
     const payload = { sub: user._id, email: user.email, role: user.accountType };
     return {
       token: this.jwtService.sign(payload),
       user,
     };
-  }
+  
+}
 
   
   async updatePassword(user:any,body:any){
@@ -221,8 +224,9 @@ export class AuthService {
       
   }
 
-  async resetPassword(body:any){
-   const { password, confirmPassword, token } = body
+  async resetPassword(req:any){
+  
+   const { password, confirmPassword, token } = req.body
    
        if (confirmPassword !== password) {
          return {
@@ -230,6 +234,7 @@ export class AuthService {
            message: "Password and Confirm Password Does not Match",
          }
        }
+       console.log(token)
        const userDetails:any = await this.UserModel.findOne( {token} )
        if (!userDetails) {
          return {
@@ -237,14 +242,14 @@ export class AuthService {
            message: "Token is Invalid",
          }
        }
-       if (!(userDetails.resetPasswordExpires > Date.now())) {
-         return {
-           success: false,
-           message: `Token is Expired, Please Regenerate Your Token`,
-         }
-       }
+      //  if (!(userDetails.resetPasswordExpires > Date.now())) {
+      //    return {
+      //      success: false,
+      //      message: `Token is Expired, Please Regenerate Your Token`,
+      //    }
+      //  }
        const encryptedPassword = await bcrypt.hash(password, 10)
-       await this.userService.update(
+       await this.UserModel.updateOne(
          { token: token },
          { password: encryptedPassword },
          { new: true }
@@ -258,8 +263,8 @@ export class AuthService {
       
   }
 
-  async resetPasswordToken(email:string, req:Request){
-          
+  async resetPasswordToken( req:any){
+        const {email}=req.body
         const user = await this.UserModel.findOne({email})
         if (!user) {
           return {
@@ -269,7 +274,7 @@ export class AuthService {
         }
         const token = crypto.randomBytes(20).toString("hex")
 
-              const updatedDetails = await this.userService.update(
+              const updatedDetails = await this.UserModel.updateOne(
           { email: email },
           {
             token: token,
@@ -283,8 +288,8 @@ export class AuthService {
         const host = req.hostname;
 
                const port = process.env.PORT??4000;
-        // const url = `http://localhost:3000/update-password/${token}`
-       const url= `${protocol}://${host}:${port}/update-password/${token}`
+        const url = `http://localhost:3000/update-password/${token}`
+      //  const url= `${protocol}://${host}:${port}/update-password/${token}`
         // const url = `https://studynotion-edtech-project.vercel.app/update-password/${token}`
     
         await this.mailSender.sendMail(

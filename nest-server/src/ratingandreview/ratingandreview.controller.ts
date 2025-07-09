@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { RatingandreviewService } from './ratingandreview.service';
 import { CreateRatingandreviewDto } from './dto/create-ratingandreview.dto';
 import { UpdateRatingandreviewDto } from './dto/update-ratingandreview.dto';
@@ -14,7 +14,7 @@ export class RatingandreviewController {
   @UseGuards(JwtAuthGuard,RolesGuard)
   @Roles('Student')
   @Post('createRating')
-  async create(req:Request) {
+  async create(@Req() req:any) {
     return await this.ratingandreviewService.createRating(req);
   }
 
@@ -24,7 +24,7 @@ export class RatingandreviewController {
   }
 
   @Get('getAverageRating')
-  async average(req:Request) {
+  async average(@Req() req:any) {
     return await this.ratingandreviewService.getAverageRating(req);
   }
 
