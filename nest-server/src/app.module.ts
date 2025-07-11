@@ -13,6 +13,7 @@ import { CategoryModule } from './category/category.module';
 import { CourseprogressModule } from './courseprogress/courseprogress.module';
 import { RatingandreviewModule } from './ratingandreview/ratingandreview.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { ChatsModule } from './chats/chats.module';
 @Module({
   imports: [UserModule, OtpModule, ProfileModule,
    
@@ -30,7 +31,8 @@ import { MulterModule } from '@nestjs/platform-express';
     RatingandreviewModule,
     MulterModule.register({
       dest: './uploads',
-    })
+    }),
+    ChatsModule
   ],
   controllers: [AppController],
   providers: [AppService],

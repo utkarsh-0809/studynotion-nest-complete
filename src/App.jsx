@@ -34,6 +34,7 @@ import VerifyEmail from "./pages/VerifyEmail"
 import ViewCourse from "./pages/ViewCourse"
 import { getUserDetails } from "./services/operations/profileAPI"
 import { ACCOUNT_TYPE } from "./utils/constants"
+import ChatWindow from "./pages/ChatWindow"
 // import Start from "./components/core/Dashboard/AddCourse"
 
 function App() {
@@ -152,7 +153,9 @@ function App() {
             </>
           )}
         </Route>
-
+        <Route path="/chat/:id" element={<PrivateRoute>
+          <ChatWindow></ChatWindow>
+        </PrivateRoute>}      ></Route>
         {/* 404 Page */}
         <Route path="*" element={<Error />} />
       </Routes>
