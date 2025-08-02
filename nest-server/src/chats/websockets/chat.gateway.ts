@@ -57,20 +57,20 @@ export class ChatGateway {
     const courseId=data.courseId;
 
     await this.chatService.deleteMessages(data.id)
-    const history = await this.chatService.getMessages(courseId);
-      this.server.to(data.courseId).emit('messageDeleted', { courseId, history });
+    // const history = await this.chatService.getMessages(courseId);
+    this.server.to(data.courseId).emit('messageDeleted', {id:data.id});
   }
-  //  @SubscribeMessage('editMsg')
-  // async editMessage(
-  //   @MessageBody()
-  //   data: {  id:string,courseId:string },
-  //   @ConnectedSocket() client: Socket,
-  // ) {
-  //   console.log(data);
-  //   const courseId=data.courseId;
+   @SubscribeMessage('editMsg')
+  async editMessage(
+    @MessageBody()
+    data: {  id:string,courseId, message:string },
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log(data);
+    const courseId=data.courseId;
 
-  //   await this.chatService.editMessages(data.id,msg)
-  //   const history = await this.chatService.getMessages(courseId);
-  //     this.server.to(data.courseId).emit('messageDeleted', { courseId, history });
-  // }
+    await this.chatService.editMessage(data.id,data.message)
+    // const history = await this.chatService.getMessages(courseId);
+      this.server.to(data.courseId).emit('messageUpdated', { id:data.id,message: data.message });
+  }
 }

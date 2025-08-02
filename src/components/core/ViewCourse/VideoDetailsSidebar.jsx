@@ -6,7 +6,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { BsChevronUp } from "react-icons/bs";
 import IconBtn from "../../Common/IconBtn"
 
-export default function VideoDetailsSidebar({ setReviewModal }) {
+export default function VideoDetailsSidebar({ setReviewModal,id }) {
   const [activeStatus, setActiveStatus] = useState("")
   const [videoBarActive, setVideoBarActive] = useState("")
   const navigate = useNavigate()
@@ -56,6 +56,13 @@ export default function VideoDetailsSidebar({ setReviewModal }) {
               text="Add Review"
               customClasses="ml-auto"
               onclick={() => setReviewModal(true)}
+            />
+            <IconBtn
+              text="Chat"
+              customClasses="ml-auto"
+              onclick={() => {
+                 navigate(`chat/${id}`)
+              }}
             />
           </div>
           <div className="flex flex-col">

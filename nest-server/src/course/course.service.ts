@@ -2,7 +2,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 // import { Course, CourseDocument } from './course.schema';
-import mongoose, { Model, Types } from 'mongoose';
+import mongoose, { Model, Mongoose, Types } from 'mongoose';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { Course, CourseDocument } from './models/course.schme';
@@ -581,5 +581,17 @@ export class CourseService {
          return { success: false, error: error.message }
        }
      }
+   }
+
+   async getCoursesValue(id:any){
+    const objectId = new Types.ObjectId(id);
+    console.log(objectId);
+    const courses=await this.courseModel.find({instructor:objectId});
+    console.log("courses",courses);
+    let total=0;
+    courses.forEach((val,ind)=>{
+      total+=val.price*val.studentsEnroled.length;
+    })
+    return total;
    }
 }

@@ -10,14 +10,18 @@ export class ChatsService {
   constructor(@InjectModel(Chat.name) private chatModel: Model<ChatDocument>) {}
 
   async saveMessage(data: Partial<Chat>): Promise<Chat> {
-    const newMsg = new this.chatModel(data);
-    return newMsg.save();
+    const  newMsg = new this.chatModel(data);
+    return await newMsg.save();
   }
 
   async getMessages(courseId: string): Promise<Chat[]> {
-    return  this.chatModel.find({ courseId }).sort({ createdAt: 1 }).exec();
+     return await  this.chatModel.find({ courseId }).sort({ createdAt: 1 }).exec();
   }
   async deleteMessages(id: string):Promise<void> {
      await this.chatModel.findByIdAndDelete(id );
   }
+  async editMessage(id: string, message: string): Promise<any> {
+      await this.chatModel.findByIdAndUpdate(
+      id, {message});
+}
 }

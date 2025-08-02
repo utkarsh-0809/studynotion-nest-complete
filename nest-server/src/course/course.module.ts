@@ -36,5 +36,6 @@ import { MailService } from 'src/common/mailsender/sendmail';
   ],
   controllers: [CourseController],
   providers: [CourseService,MailService],
+  exports:[CourseService]
 })
 export class CourseModule {}

@@ -11,26 +11,7 @@ export class UserService {
   async create(createUserDto: CreateUserDto) {
     return  await this.userModel.create(createUserDto)
   }
-
-  // login(createUserDto:CreateUserDto){
-  //   return 'you are logged in'
-  // }
-
-  // signup(createUserDto:CreateUserDto){
-  //   return 'you are signedup in'
-  // }
-  // changepassword(createUserDto:CreateUserDto){
-  //   return 'password changed'
-  // }
-  // sendotp(createUserDto:CreateUserDto){
-  //   return 'otp sent'
-  // }
-  // resetPasswordToken(createUserDto:CreateUserDto){
-  //   return 'otp sent'
-  // }
-  // resetPassword(createUserDto:CreateUserDto){
-  //   return 'otp sent'
-  // }
+  
 
   async findAll() {
     return await this.userModel.find();

@@ -1,0 +1,17 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Query {
+  getAllUsers: [UserInfo!]!
+}
+
+type UserInfo {
+  accountType: String!
+  coursesBoughtCount: Int
+  coursesSoldCount: Int
+  coursesSoldValue: Float
+  email: String!
+  id: ID!
+  name: String!
+}

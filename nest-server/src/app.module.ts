@@ -14,6 +14,11 @@ import { CourseprogressModule } from './courseprogress/courseprogress.module';
 import { RatingandreviewModule } from './ratingandreview/ratingandreview.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { ChatsModule } from './chats/chats.module';
+
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { join } from 'path';
+import { Query1Module } from './graphql/query1.module';
 @Module({
   imports: [UserModule, OtpModule, ProfileModule,
    
@@ -22,7 +27,7 @@ import { ChatsModule } from './chats/chats.module';
       envFilePath: '.env',
     }),
     //The ! tells TypeScript:“I promise this is defined.”
-    MongooseModule.forRoot(process.env.MONGO_URI!),
+    MongooseModule.forRoot(process.env.MONGODB_URI!),
     CourseModule,
     SectionModule,
     SubsectionModule,
@@ -32,7 +37,14 @@ import { ChatsModule } from './chats/chats.module';
     MulterModule.register({
       dest: './uploads',
     }),
-    ChatsModule
+    ChatsModule,
+     GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'), // auto generates schema
+      sortSchema: true,
+      playground: true, // for local dev, enables GraphQL playground
+    }),
+    Query1Module
   ],
   controllers: [AppController],
   providers: [AppService],

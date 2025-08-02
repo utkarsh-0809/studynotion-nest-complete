@@ -86,8 +86,11 @@ function CourseDetails() {
   if (!response.success) {
     return <Error />
   }
-
-  const {
+  const temp={
+    firstName:"deleted User",
+    lastName:""
+  }
+  let {
     _id: course_id,
     courseName,
     courseDescription,
@@ -96,11 +99,12 @@ function CourseDetails() {
     whatYouWillLearn,
     courseContent,
     ratingAndReviews,
-    instructor,
+    instructor=temp,
     studentsEnroled,
     createdAt,
   } = response.data?.courseDetails
-
+  if(!instructor) instructor=temp;
+  console.log("instructor",instructor);
   const handleBuyCourse = () => {
     if (token) {
       BuyCourse(token, [courseId], user, navigate, dispatch)

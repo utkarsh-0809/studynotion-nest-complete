@@ -6,7 +6,7 @@ import io from 'socket.io-client';
 import { jwtDecode } from 'jwt-decode'; // ✅ Correct
 import { getFullDetailsOfCourse } from '../services/operations/courseDetailsAPI';
 
-const socket = io('http://localhost:4000'); // Adjust to your backend URL
+const socket = io('http://localhost:5000'); // Adjust to your backend URL
 
 const ChatWindow =  () => {
     const { id } = useParams();
@@ -27,7 +27,7 @@ const ChatWindow =  () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading,setloading]=useState(0);
-  const [edit,setedit]=useState([]);
+  const [edit,setedit]= useState(new Map([]));
 
 
    useEffect(() => {
@@ -35,9 +35,9 @@ const ChatWindow =  () => {
       try {
         //  if (!userId || !token) return;
         const data=await getFullDetailsOfCourse(courseId,token);
-        // console.log(data.courseDetails.instructor._id);
+        console.log(data);
         // console.log(user?._id)
-      //  setInstructor(userId==data.courseDetails.instructor._id)
+      //  setInstructor?(userId==data.courseDetails.instructor?._id)
         setCourse(data.courseDetails);
         // console.log(course)
         setloading(1);
@@ -62,20 +62,23 @@ const ChatWindow =  () => {
     socket.on('joinedRoom', ({ history }) => {
       // console.log(history.length)
       history?.forEach((val,indx) => {
+        edit.set(val._id,val.message);
         history[indx].edit=0;
         // console.log(history[indx])
       });
       console.log("history",history)
       setMessages(history);
+      // console.log("messages",hi)
     });
 
-    socket.on('messageDeleted', ({ history }) => {
-      // console.log(history)
-      history?.forEach((val,indx) => {
-        history[indx].edit=0;
-        // console.log(history[indx])
-      });
-      setMessages(history);
+    socket.on('messageDeleted', ({ id }) => {
+   
+      setMessages((prev) => prev.filter((msg) => msg._id !== id));
+    });
+    socket.on('messageUpdated', ({ id,message }) => {
+   
+      setMessages((prev) => prev.map((msg) => msg._id !== id?msg:{...msg,message:message}));
+      // handledit(indx,0);
     });
 
     socket.on('receiveCourseMessage', (msg) => {
@@ -107,12 +110,12 @@ const ChatWindow =  () => {
   };
   const handleDelete=(id)=>{
     console.log(id)
+    console.log(messages)
     socket.emit('deleteMsg',{
       id,
       courseId
     });
   }
-
   const handledit=(indx,val)=>{
    const updatedMessages = messages.map((msg, index) =>
     index === indx ? { ...msg, edit: val } : msg
@@ -120,20 +123,20 @@ const ChatWindow =  () => {
   setMessages(updatedMessages);
 
   }
-  const changeText=(indx,msg)=>{
-  //  const updatedMessages = messages.map((msg, index) =>
-  //   index === indx ? { ...msg, edit: val } : msg
-  // );
-  // setMessages(updatedMessages);
+  const changeText=(id,indx,message)=>{
+  // handledit(indx,0);
   socket.emit('editMsg',{
       id,
-      courseId
+      courseId,
+      message
     });
+  handledit(indx,0);
   }
   const handleChange=(msg,indx)=>{
-   let temp=messages;
-    temp[indx].message=msg;
-    setedit(temp);
+    const newMap = new Map(edit);
+    newMap.set(indx, msg);
+setedit(newMap);
+
   }
 
   return (
@@ -152,22 +155,24 @@ const ChatWindow =  () => {
           {/* <span className="font-bold text-white ">{msg.username}</span> */}
            <img
           src={msg?.image?msg.image:""}
+          // src={user.image}
           alt={`profile-${user?.firstName}`}
           className="aspect-square w-[30px] rounded-full object-cover"
         />
-        {/* { console.log(isInstructor)} */
+        {/* { console.log(isInstructor?)} */
           msg.edit==0?
-          <p className={`ml-2 ${msg.userId==course.instructor._id?"text-yellow-500":"text-white"} bg-green-500 `}>{msg.message}</p>
+          <p className={`ml-2 ${msg.userId==course.instructor?._id?"text-yellow-500":"text-white"} bg-green-500 `}>{msg.message}</p>
           :
           <input
-      value={edit[idx].message}
-      onChange={(e) => handleChange(e.target.value,idx)}
+      value={edit.get(msg._id)}
+      
+      onChange={(e) => handleChange(e.target.value,msg._id)}
       className="flex-grow px-3 py-2  rounded-md bg-gray-700 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
       placeholder="Type a message..."
     />
          }
           
-          { ((msg.userId==userId||userId==course.instructor._id)&&msg.edit==0)?
+          { ((msg.userId==userId||userId==course.instructor?._id)&&msg.edit==0)?
             (<button
           onClick={() => handleDelete(msg._id)}
           className="ml-4 h-20px w-20px bg-yellow text-red-500 hover:text-red-700"
@@ -176,16 +181,16 @@ const ChatWindow =  () => {
         :<p></p>
 
           }
-          { ((msg.userId==userId||userId==course.instructor._id)&&msg.edit==1)?
+          { ((msg.userId==userId||userId==course.instructor?._id)&&msg.edit==1)?
             (<button
-          onClick={() => changeText(msg._id)}
+          onClick={() => changeText(msg._id,idx,edit.get(msg._id))}
           className="ml-4 h-20px w-20px bg-yellow text-red-500 hover:text-red-700"
           title="Delete message"
         >send</button>)
         :<p></p>
 
           }
-          { ((msg.userId==userId||userId==course.instructor._id)&&msg.edit==0)?
+          { ((msg.userId==userId)&&msg.edit==0)?
           <button
           onClick={() =>handledit(idx,1)}
           className="ml-4 h-20px w-20px bg-yellow text-red-500 hover:text-red-700"
@@ -193,7 +198,7 @@ const ChatWindow =  () => {
         >edit</button>:
         <p></p>
           }
-           { ((msg.userId==userId||userId==course.instructor._id)&&msg.edit==1)?
+           { ((msg.userId==userId||userId==course.instructor?._id)&&msg.edit==1)?
           <button
           onClick={() =>handledit(idx,0)}
           className="ml-4 h-20px w-20px bg-yellow text-red-500 hover:text-red-700"

@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { cloudinaryConnect } from './common/config/cloudinaryConnect';
-
 // import * as fileUpload from 'express-fileupload';
 // const fileUpload = require("express-fileupload");
 // https://chatgpt.com/share/68667404-2720-800f-ae1c-d2b635b0350a
@@ -12,6 +11,7 @@ async function bootstrap() {
 
   expressApp.set('trust proxy', 1);
   app.enableCors();
+
   // app.use(
   cloudinaryConnect()
 
@@ -21,7 +21,7 @@ async function bootstrap() {
 //     tempFileDir: '/tmp/',
 //   }),
 // );
-
+  console.log(process.env.PORT);
   await app.listen(process.env.PORT ?? 4000);
   
    
