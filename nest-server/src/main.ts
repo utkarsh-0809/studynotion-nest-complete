@@ -15,13 +15,7 @@ async function bootstrap() {
   // app.use(
   cloudinaryConnect()
 
-//     app.use(
-//   fileUpload({
-//     useTempFiles: true,
-//     tempFileDir: '/tmp/',
-//   }),
-// );
-  console.log(process.env.PORT);
+
   await app.listen(process.env.PORT ?? 4000);
   
    

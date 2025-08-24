@@ -26,7 +26,7 @@ function loadScript(src) {
     }
     document.body.appendChild(script)
   })
-}
+} 
 
 // Buy the Course
 export async function BuyCourse(

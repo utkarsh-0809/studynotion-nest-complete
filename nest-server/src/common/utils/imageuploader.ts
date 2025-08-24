@@ -70,6 +70,6 @@ export const uploadImageToCloudinary = (
       resolve(result);
     });
 
-    uploadStream.end(file.buffer); // ✅ stream the buffer
+    uploadStream.end(file.buffer); //  stream the buffer
   });
 };

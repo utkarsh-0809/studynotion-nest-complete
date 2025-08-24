@@ -13,7 +13,7 @@ export class UserResolver {
   @Query(() => [UserInfo])
   async getAllUsers(): Promise<UserInfo[]> {
     const users = await this.userService.findAll();
-    console.log(users);
+    // console.log(users);
     // Enrich users with their respective role-based info
     return Promise.all(
       users.map(async (user:any) => {
@@ -26,7 +26,7 @@ export class UserResolver {
 
         if (user.accountType === 'Instructor') {
           baseInfo.coursesSoldCount = user.courses.length;
-          baseInfo.coursesSoldValue =this.courseService.getCoursesValue(user.id);
+          baseInfo.coursesSoldValue =await this.courseService.getCoursesValue(user.id);
         
         } else if (user.accountType === 'Student') {
           baseInfo.coursesBoughtCount = user.courses.length;

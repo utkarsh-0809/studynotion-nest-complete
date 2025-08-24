@@ -19,6 +19,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { Query1Module } from './graphql/query1.module';
+import { CacheModule } from './cache/cache.module';
 @Module({
   imports: [UserModule, OtpModule, ProfileModule,
    
@@ -44,7 +45,8 @@ import { Query1Module } from './graphql/query1.module';
       sortSchema: true,
       playground: true, // for local dev, enables GraphQL playground
     }),
-    Query1Module
+    Query1Module,
+    CacheModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -91,7 +91,7 @@ const ChatWindow =  () => {
       socket.off('receiveCourseMessage');
       socket.off('joinedRoom');
     };
-  }, []);
+  }, []); 
 
   const sendMessage = () => {
     if (input.trim()) {
