@@ -36,6 +36,9 @@ import { getUserDetails } from "./services/operations/profileAPI"
 import { ACCOUNT_TYPE } from "./utils/constants"
 import ChatWindow from "./pages/ChatWindow"
 import AllUsersInfo from "./components/core/Dashboard/AllUserInfo"
+import Subscription from "./pages/Subscription"
+import SubscribedCourses from "./components/core/Dashboard/SubscribedCourses"
+import Discussions from "./pages/Discuss"
 // import Start from "./components/core/Dashboard/AddCourse"
 
 function App() {
@@ -58,8 +61,11 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/subscription" element={<Subscription />} />
+        <Route path="/discuss" element={<Discussions />} />
         <Route path="courses/:courseId" element={<CourseDetails />} />
         <Route path="catalog/:catalogName" element={<Catalog />} />
+
         {/* Open Route - for Only Non Logged in User */}
         <Route
           path="login"
@@ -130,6 +136,10 @@ function App() {
               <Route
                 path="dashboard/enrolled-courses"
                 element={<EnrolledCourses />}
+              />
+               <Route
+                path="dashboard/subscribed-courses"
+                element={<SubscribedCourses />}
               />
               <Route path="/dashboard/cart" element={<Cart />} />
             </>

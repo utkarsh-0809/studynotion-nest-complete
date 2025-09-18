@@ -23,7 +23,10 @@ function AllUsersInfo() {
     `;
 
     // Make the fetch request
-    fetch('http://localhost:5000/graphql', {
+    const protocol = req.protocol;               // "http" or "https"
+const host = req.get('host');                // "localhost:3000" or "myapp.com"
+const url = `${protocol}://${host}/graphql`;
+    fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

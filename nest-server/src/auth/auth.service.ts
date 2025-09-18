@@ -288,10 +288,10 @@ export class AuthService {
         const host = req.hostname;
 
                const port = process.env.PORT??4000;
-        const url = `http://localhost:3000/update-password/${token}`
+        // const url = `http://localhost:3000/update-password/${token}`
       //  const url= `${protocol}://${host}:${port}/update-password/${token}`
         // const url = `https://studynotion-edtech-project.vercel.app/update-password/${token}`
-    
+        const url = `${protocol}://${host}/update-password/${token}`;
         await this.mailSender.sendMail(
           email,
           "Password Reset",

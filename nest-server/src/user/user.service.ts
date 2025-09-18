@@ -12,11 +12,33 @@ export class UserService {
     return  await this.userModel.create(createUserDto)
   }
   
+  async subscribe(req:any){
+    try{
 
+    
+    const {courseId}=req.body
+    const userId=req.user.userId;
+    const user:any=await this.userModel.findById(userId);
+    const date=user.subscriptionExpires;
+    console.log(user)
+    if(date<=new Date()){
+      return {message:"please purchade subscription"}
+    }
+    if(user?.subscribedCourses?.includes(courseId)){
+      return {message:"already subscribed"}
+    }
+    const data=await this.userModel.findByIdAndUpdate(userId,{ $push: { subscribedCourses: courseId },new: true})
+    return {message:"subscribed successfully",data}
+    }
+    catch(err){ 
+      console.log(err);
+      return {message:"something went wrong"}
+    }
+  }
   async findAll() {
     return await this.userModel.find();
   }
-
+  
   async findOne(obj:any) {
   return await this.userModel.findOne(obj);
 }

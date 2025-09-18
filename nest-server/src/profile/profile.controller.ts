@@ -37,6 +37,11 @@ export class ProfileController {
     
     return this.profileService.getEnrolledCourses(req);
   }
+  @Get('getSubscribedCourses')
+  getSubscribedCourses(@Req() req:any){
+    
+    return this.profileService.getSubscribedCourses(req);
+  }
   // displayPicture
   @UseInterceptors(FileInterceptor('displayPicture'))
   @Put('updateDisplayPicture')

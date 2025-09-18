@@ -56,6 +56,15 @@ export class User {
 
   @Prop({ type: [Types.ObjectId], ref: 'courseProgress' })
   courseProgress?: Types.ObjectId[];
+
+  @Prop({ type: [Types.ObjectId], ref: 'Course' })
+  subscribedCourses?:[any]
+
+  @Prop()
+  subscriptionExpires?:Date
+
+  @Prop({min:0,default:0})
+  coin:number
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -36,6 +36,13 @@ export const sidebarLinks = [
     icon: "VscMortarBoard",
   },
   {
+    id: 9,
+    name: "Subscribed Courses",
+    path: "/dashboard/subscribed-courses",
+    type: ACCOUNT_TYPE.STUDENT,
+    icon: "VscMortarBoard",
+  },
+  {
     id: 7,
     name: "Cart",
     path: "/dashboard/cart",
@@ -49,4 +56,5 @@ export const sidebarLinks = [
     type: ACCOUNT_TYPE.ADMIN,
     icon: "VscArchive",
   },
+   
 ]

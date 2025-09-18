@@ -36,5 +36,10 @@ export class UserController {
     return this.userService.remove(id);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Post('subscribe')
+  subscribe(@Req() req:any){
+    return this.userService.subscribe(req)
+  }
  
 }

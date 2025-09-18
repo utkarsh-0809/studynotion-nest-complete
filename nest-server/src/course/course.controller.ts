@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, UseInterceptors, UploadedFile, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, UseInterceptors, UploadedFile, UploadedFiles, UseFilters } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
@@ -88,6 +88,12 @@ export class CourseController {
   @Delete('/course/deleteCourse')
   async deleteCourse(@Req() req:any) {
     return await this.courseService.deleteCourse(req);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/course/updateCourseProgress')
+  async updateCourseProgress(@Req() req:any) {
+    return await this.courseService.updateCourseProgress(req);
   }
 
    @UseGuards(JwtAuthGuard,RolesGuard)

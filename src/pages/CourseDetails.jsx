@@ -105,9 +105,9 @@ function CourseDetails() {
   } = response.data?.courseDetails
   if(!instructor) instructor=temp;
   console.log("instructor",instructor);
-  const handleBuyCourse = () => {
+  const handleBuyCourse = (discount=0) => {
     if (token) {
-      BuyCourse(token, [courseId], user, navigate, dispatch)
+      BuyCourse(token, [courseId], user,discount, navigate, dispatch)
       return
     }
     setConfirmationModal({

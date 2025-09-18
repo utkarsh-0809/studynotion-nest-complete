@@ -3,12 +3,12 @@ import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Request } from 'express';
-import { CacheService } from 'src/cache/cache.service';
+// import { CacheService } from 'src/cache/cache.service';
 
 @Controller('/api/v1/course/')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService,
-    private readonly cacheService: CacheService
+    // private readonly cacheService: CacheService
   ) {}
 
   @Post('createCategory')
@@ -19,21 +19,21 @@ export class CategoryController {
     const categories = await this.categoryService.showAllCategories();
 
     // Store in cache for 1 hour
-     const cacheKey = 'all_categories';
-    await this.cacheService.set(cacheKey, categories, 360000);
+    //  const cacheKey = 'all_categories';
+    // await this.cacheService.set(cacheKey, categories, 360000);
     return res;
   }
 
   @Get('showAllCategories')
   async showAllCategories() {
     // Check cache
-    const cacheKey = 'all_categories';
-    const cachedData = await this.cacheService.get(cacheKey);
+    // const cacheKey = 'all_categories';
+    // const cachedData = await this.cacheService.get(cacheKey);
 
-    if (cachedData) {
-      console.log('✅ Cache Hit');
-      return cachedData;
-    }
+    // if (cachedData) {
+    //   console.log('✅ Cache Hit');
+    //   return cachedData;
+    // }
 
     // console.log('❌ Cache Miss');
 
@@ -41,7 +41,7 @@ export class CategoryController {
     const categories = await this.categoryService.showAllCategories();
 
     // Store in cache for 1 hour
-    await this.cacheService.set(cacheKey, categories, 360000);
+    // await this.cacheService.set(cacheKey, categories, 360000);
 
     return categories;
   }

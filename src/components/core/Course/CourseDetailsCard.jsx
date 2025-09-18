@@ -1,4 +1,4 @@
-import React from "react"
+import React, { act } from "react"
 import copy from "copy-to-clipboard"
 import { toast } from "react-hot-toast"
 import { BsFillCaretRightFill } from "react-icons/bs"
@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom"
 
 import { addToCart } from "../../../slices/cartSlice"
 import { ACCOUNT_TYPE } from "../../../utils/constants"
+import { SubscribeCourse } from "../../../services/operations/studentFeaturesAPI"
+import { set } from "react-hook-form"
 
 // const CourseIncludes = [
 //   "8 hours on-demand video",
@@ -28,9 +30,29 @@ function CourseDetailsCard({ course, setConfirmationModal, handleBuyCourse }) {
     _id: courseId,
   } = course
 
+  const [actualPrice, setActualPrice] = React.useState(CurrentPrice)
+  const [coins, setCoins] = React.useState(user?.coin??0);
+
+  const handleReedem = () => {
+    if(coins<=0){
+      toast.error("You don't have enough coins to reedem");
+      return;
+    }
+    let st=actualPrice;
+    let diff=actualPrice-coins;
+    setActualPrice(actualPrice - coins);
+    setCoins(coins-(st-diff));
+    toast.success("Coins Reedemed Successfully");
+
+  }
+
   const handleShare = () => {
     copy(window.location.href)
     toast.success("Link copied to clipboard")
+  }
+
+  function handleSubscribeCourse() {
+      SubscribeCourse(token, courseId,navigate);
   }
 
   const handleAddToCart = () => {
@@ -51,7 +73,6 @@ function CourseDetailsCard({ course, setConfirmationModal, handleBuyCourse }) {
       btn2Handler: () => setConfirmationModal(null),
     })
   }
-
   // console.log("Student already enrolled ", course?.studentsEnroled, user?._id)
 
   return (
@@ -68,15 +89,23 @@ function CourseDetailsCard({ course, setConfirmationModal, handleBuyCourse }) {
 
         <div className="px-4">
           <div className="space-x-3 pb-4 text-3xl font-semibold">
-            Rs. {CurrentPrice}
+            Rs. {actualPrice}
           </div>
+          <div className="space-x-3 pb-4 text-3xl font-semibold">
+            {/* <FontAwesomeIcon icon={byPrefixAndName.fas['coin']} /> */}
+            Coins {coins}
+          </div>
+
           <div className="flex flex-col gap-4">
+            <button onClick={handleReedem} className="blackButton">
+                Reedem Coins
+              </button>
             <button
               className="yellowButton"
               onClick={
                 user && course?.studentsEnroled.includes(user?._id)
                   ? () => navigate("/dashboard/enrolled-courses")
-                  : handleBuyCourse
+                  :()=> handleBuyCourse(CurrentPrice-actualPrice)
               }
             >
               {user && course?.studentsEnroled.includes(user?._id)
@@ -88,6 +117,20 @@ function CourseDetailsCard({ course, setConfirmationModal, handleBuyCourse }) {
                 Add to Cart
               </button>
             )}
+          </div>
+          <div className="flex flex-col gap-4 my-4">
+            <button
+              className="yellowButton"
+              onClick={
+                user && user?.subscribedCourses?.includes(courseId)
+                  ? () => navigate("/dashboard/subscribed-courses")
+                  : handleSubscribeCourse 
+              }
+            >
+              {user && user?.subscribedCourses?.includes(courseId)
+                ? "Go To Course"
+                : "Subscribe Now"}
+            </button>
           </div>
           <div>
             <p className="pb-3 pt-6 text-center text-sm text-richblack-25">

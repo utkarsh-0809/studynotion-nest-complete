@@ -5,9 +5,13 @@ import { useParams } from 'react-router-dom';
 import io from 'socket.io-client';
 import { jwtDecode } from 'jwt-decode'; // ✅ Correct
 import { getFullDetailsOfCourse } from '../services/operations/courseDetailsAPI';
-
-const socket = io('http://localhost:5000'); // Adjust to your backend URL
-
+// const protocol = window.location.protocol;               // "http" or "https"
+// const host = window.location.hostname;                // "localhost:3000" or "myapp.com"
+// const url = `${protocol}//${host}`; 
+// const socket = io(url); // Adjust to your backend URL
+// const socket = io(window.location.origin); // gives protocol + host
+// backend url  
+const socket=io('http://localhost:5000')
 const ChatWindow =  () => {
     const { id } = useParams();
     const courseId=id;
@@ -35,7 +39,7 @@ const ChatWindow =  () => {
       try {
         //  if (!userId || !token) return;
         const data=await getFullDetailsOfCourse(courseId,token);
-        console.log(data);
+        console.log("data",data);
         // console.log(user?._id)
       //  setInstructor?(userId==data.courseDetails.instructor?._id)
         setCourse(data.courseDetails);
@@ -57,8 +61,9 @@ const ChatWindow =  () => {
 
   useEffect( () => {
     // Join the room when component mounts
+    console.log("socket",socket)
     socket.emit('joinCourseRoom', { courseId, userId });
-
+  
     socket.on('joinedRoom', ({ history }) => {
       // console.log(history.length)
       history?.forEach((val,indx) => {

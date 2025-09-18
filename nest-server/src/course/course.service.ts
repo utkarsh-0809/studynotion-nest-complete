@@ -418,9 +418,51 @@ export class CourseService {
         }
   }
 
-
+  async updateCourseProgress(req:any){
+     const { courseId, subsectionId } = req.body
+       const userId = req.user.userId;
+     
+       try {
+         // Check if the subsection is valid
+         const subsection = await this.SubSectionModel.findById(subsectionId)
+         if (!subsection) {
+           return { error: "Invalid subsection" }
+         }
+     
+         // Find the course progress document for the user and course
+         let courseProgress = await this.CourseprogressModel.findOne({
+           courseID: courseId,
+           userId: userId,
+         })
+     
+         if (!courseProgress) {
+           // If course progress doesn't exist, create a new one
+           return {
+             success: false,
+             message: "Course progress Does Not Exist",
+           }
+         } else {
+           // If course progress exists, check if the subsection is already completed
+           if (courseProgress.completedVideos.includes(subsectionId)) {
+             return { error: "Subsection already completed" }
+           }
+     
+           // Push the subsection into the completedVideos array
+           courseProgress.completedVideos.push(subsectionId)
+         }
+     
+         // Save the updated course progress
+         await courseProgress.save()
+     
+         return { message: "Course progress updated" }
+       } catch (error) {
+         console.error(error)
+         return { error: "Internal server error" }
+       }
+     } 
+  
   async catpturePayment(req:any){
-    const { courses } = req.body
+    const { courses,discount=0 } = req.body
       const userId = req.user.userId
       if (courses.length === 0) {
         return { success: false, message: "Please Provide Course ID" }
@@ -429,7 +471,7 @@ export class CourseService {
       let total_amount = 0
     
       for (const course_id of courses) {
-        let course
+        let course:any
         try {
           // Find the course by its ID
           course = await this.courseModel.findById(course_id)
@@ -452,7 +494,9 @@ export class CourseService {
           return { success: false, message: error.message }
         }
       }
-    
+      console.log("this is total discount",discount,typeof discount);
+      total_amount-=Number(discount);
+      console.log("Total Amount:", total_amount)
       const options = {
         amount: total_amount * 100,
         currency: "INR",
@@ -477,8 +521,8 @@ export class CourseService {
     const razorpay_payment_id = req.body?.razorpay_payment_id
     const razorpay_signature = req.body?.razorpay_signature
     const courses = req.body?.courses
-  
-    const userId = req.user.userId
+    const discount=req.body?.discount;
+    const userId = req?.user?.userId
   
     if (
       !razorpay_order_id ||
@@ -498,6 +542,11 @@ export class CourseService {
       .digest("hex")
   
     if (expectedSignature === razorpay_signature) {
+      if(discount>0){
+       await this.UserModel.findByIdAndUpdate(userId,{
+          $inc:{coin:-discount}
+        })
+      }
       await this.enrollStudents(courses, userId)
       return { success: true, message: "Payment Verified" }
     }

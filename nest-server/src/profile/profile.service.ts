@@ -207,6 +207,65 @@ export class ProfileService {
         }
   }
 
+  async getSubscribedCourses(req:any){
+     const userId = req.user.userId
+        let userDetails:any = await this.UserModel.findOne({
+          _id: userId,
+        })
+          .populate({
+            path: "subscribedCourses",
+            populate: {
+              path: "courseContent",
+              populate: {
+                path: "subSection",
+              },
+            },
+          })
+          .exec()
+        userDetails = userDetails.toObject()
+        var SubsectionLength = 0
+        for (var i = 0; i < userDetails.subscribedCourses.length; i++) {
+          let totalDurationInSeconds = 0
+          SubsectionLength = 0
+          for (var j = 0; j < userDetails.subscribedCourses[i].courseContent.length; j++) {
+            totalDurationInSeconds += userDetails.subscribedCourses[i].courseContent[
+              j
+            ].subSection.reduce((acc, curr) => acc + parseInt(curr.timeDuration), 0)
+            userDetails.subscribedCourses[i].totalDuration = convertSecondsToDuration(
+              totalDurationInSeconds
+            )
+            SubsectionLength +=
+              userDetails.subscribedCourses[i].courseContent[j].subSection.length
+          }
+          let courseProgressCount:any = await this.CourseprogressModel.findOne({
+            courseID: userDetails.subscribedCourses[i]._id,
+            userId: userId,
+          })
+          courseProgressCount = courseProgressCount?.completedVideos.length
+          if (SubsectionLength === 0) {
+            userDetails.subscribedCourses[i].progressPercentage = 100
+          } else {
+            // To make it up to 2 decimal point
+            const multiplier = Math.pow(10, 2)
+            userDetails.subscribedCourses[i].progressPercentage =
+              Math.round(
+                (courseProgressCount / SubsectionLength) * 100 * multiplier
+              ) / multiplier
+          }
+        }
+    
+        if (!userDetails) {
+          return {
+            success: false,
+            message: `Could not find user with id: ${userDetails}`,
+          }
+        }
+        return {
+          success: true,
+          data: userDetails.subscribedCourses,
+        }
+  }
+
   async instructorDashboard(req:any){
   
     const courseDetails = await this.CourseModel.find({ instructor: req.user.userId })

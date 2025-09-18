@@ -11,9 +11,10 @@ export default function RenderTotalAmount() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const handleBuyCourse = () => {
+  const handleBuyCourse = (discount=0) => {
+    console.log("discount",discount);
     const courses = cart.map((course) => course._id)
-    BuyCourse(token, courses, user, navigate, dispatch)
+    BuyCourse(token, courses, user,discount, navigate, dispatch)
   }
 
   return (
