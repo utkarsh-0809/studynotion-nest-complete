@@ -57,7 +57,7 @@ export class UserService {
     return await this.userModel.findOneAndUpdate(
       {email},
       {password},
-      { returnDocument: 'after' }
+      { returnDocument: 'after' } as any
     )
   }
   

@@ -39,7 +39,7 @@ export class SectionService {
               courseContent: newSection._id,
             },
           },
-          { returnDocument: 'after' }
+          { returnDocument: 'after' } as any
         )
           .populate({
             path: "courseContent",
@@ -70,7 +70,7 @@ export class SectionService {
         const section = await this.sectionModel.findByIdAndUpdate(
           sectionId,
           { sectionName },
-          { returnDocument: 'after' }
+          { returnDocument: 'after' } as any
         )
         const course = await this.courseModel.findById(courseId)
           .populate({

@@ -280,7 +280,7 @@ export class AuthService {
             token: token,
             resetPasswordExpires: Date.now() + 3600000,
           },
-          { returnDocument: 'after' }
+          { returnDocument: 'after' } as any
         )
         console.log("DETAILS", updatedDetails)
     

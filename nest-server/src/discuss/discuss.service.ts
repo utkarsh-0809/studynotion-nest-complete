@@ -44,7 +44,7 @@ export class DiscussionsService {
     this.UserModel.findOneAndUpdate(
       { email: dto.user },
       { $inc: { coin: 100 } },
-    { returnDocument: 'after' },
+    { returnDocument: 'after' } as any,
     ).exec();
     console.log("Created discussion:", data);
     return data;

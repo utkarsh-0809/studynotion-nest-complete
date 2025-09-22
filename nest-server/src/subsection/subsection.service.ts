@@ -45,7 +45,7 @@ export class SubsectionService {
         const updatedSection = await this.sectionModel.findByIdAndUpdate(
           { _id: sectionId },
           { $push: { subSection: SubSectionDetails._id } },
-         { returnDocument: 'after' }
+         { returnDocument: 'after' } as any
         ).populate("subSection")
     
         // Return the updated section in the response
