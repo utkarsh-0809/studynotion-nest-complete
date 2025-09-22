@@ -11,7 +11,12 @@ import { getFullDetailsOfCourse } from '../services/operations/courseDetailsAPI'
 // const socket = io(url); // Adjust to your backend URL
 // const socket = io(window.location.origin); // gives protocol + host
 // backend url  
-const socket=io('http://localhost:5000')
+
+// const socket=io('http://localhost:5000')
+const socket = io(
+  process.env.REACT_APP_SOCKET_URL || 'http://localhost:5000'
+);
+
 const ChatWindow =  () => {
     const { id } = useParams();
     const courseId=id;

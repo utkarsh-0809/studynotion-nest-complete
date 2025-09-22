@@ -55,6 +55,7 @@ export class DiscussionsService {
 
   async findAll() {
     try{
+    console.log("here inside discuss findall");
     return this.model.find().sort({ createdAt: -1 })
     }
     catch(err){
@@ -67,31 +68,49 @@ export class DiscussionsService {
   }
 
   async upvote(id: string, userId: string) {
-    const discussion = await this.model.findById(id);
-    if (!discussion) return null;
+    const Id= new Types.ObjectId(id);
+    const discussion:any = await this.model.findById(Id);
+    // const userObjId = new Types.ObjectId(userId);
+    console.log("User ObjectId", userId);
+    console.log("Discussion before upvote:", discussion);
+    if (!discussion)
+    return {data:null,message:"Discussion not found"};
 
-    const userObjId = new Types.ObjectId(userId);
-
-    if (discussion.upvotes.includes(userObjId)) {
+    
+    if (discussion.upvotes.includes(userId)) {
       discussion.upvotes = discussion.upvotes.filter(
-        (uid) => uid.toString() !== userId,
+        (uid:any) => uid.toString() !== userId,
       );
     } else {
-      discussion.upvotes.push(userObjId);
+      discussion.upvotes.push(userId);
     }
-
+    console.log("Discussion after upvote:", discussion);
+    // discussion.save();
+    // return this.model.find().sort({ createdAt: -1 })
     return discussion.save();
   }
 
-  async addComment(id: string, userId: string, text: string) {
-    const discussion = await this.model.findById(id);
+  async addComment(id: string, user: any, text: string) {
+    const ID= new Types.ObjectId(id);
+    // const user=req.user.userId;
+    const discussion = await this.model.findById(ID);
     if (!discussion) return null;
 
     discussion.comments.push({
-      user: new Types.ObjectId(userId),
+      user: new Types.ObjectId(user),
       body: text,
     } as any);
-
+    // const discussion = await this.model.findByIdAndUpdate(
+    //   ID,
+    //   {
+    //     $push: {
+    //       comments: { user: new Types.ObjectId(user), body: text } as any,
+    //     },
+    //   }
+    // ).populate('comments.user').populate('user');
+    // if (!discussion) return {data:null,message:"Discussion not found"}; 
+    // return{data:discussion,message:"Comment added successfully"};
     return discussion.save();
+    // return this.model.find().sort({ createdAt: -1 })
   }
 }

@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards, Req } from '@nestjs/common';
 // import { DiscussionsService, DiscussService } from './discuss.service';
 import { CreateDiscussDto } from './dto/create-discuss.dto';
 import { UpdateDiscussDto } from './dto/update-discuss.dto';
 import { DiscussionsService } from './discuss.service';
-
+import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/common/gaurds/jwtauthgaurd';
+import { request, Request } from 'express';
 // @Controller('discuss')
 // export class DiscussController {
 //   constructor(private readonly discussService: DiscussService) {}
@@ -37,7 +39,7 @@ import { DiscussionsService } from './discuss.service';
 // import { Controller, Get, Post, Body, Param, Put } from '@nestjs/common';
 // import { DiscussionsService } from './discussions.service';
 
-@Controller('discussions')
+@Controller('/api/v1/main/discussions')
 export class DiscussionsController {
   constructor(private readonly discussionsService: DiscussionsService) {}
 
@@ -49,6 +51,7 @@ export class DiscussionsController {
 
   @Get()
   findAll() {
+    // console.log("Fetching all discussions");
     return this.discussionsService.findAll();
   }
 
@@ -61,9 +64,10 @@ export class DiscussionsController {
   upvote(@Param('id') id: string, @Param('userId') userId: string) {
     return this.discussionsService.upvote(id, userId);
   }
-
+  // @UseGuards(JwtAuthGuard)
   @Post(':id/comment')
-  addComment(@Param('id') id: string, @Body() body: { user: string; text: string }) {
+  addComment(@Param('id') id: any, @Req() req:any, @Body() body: { user:any, text: any }) {
+    console.log("hreeeeeeeeeeee")
     return this.discussionsService.addComment(id, body.user, body.text);
   }
 }

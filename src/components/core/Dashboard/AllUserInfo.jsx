@@ -23,8 +23,12 @@ function AllUsersInfo() {
     `;
 
     // Make the fetch request
-    const protocol = req.protocol;               // "http" or "https"
-const host = req.get('host');                // "localhost:3000" or "myapp.com"
+//     const protocol = req.protocol;               // "http" or "https"
+// const host = req.get('host');                // "localhost:3000" or "myapp.com"
+const protocol = window.location.protocol; // "http:" or "https:"
+const host = window.location.host;         // "example.com:3000"
+const hostname = window.location.hostname; // "example.com"
+const port = window.location.port; 
 const url = `${protocol}://${host}/graphql`;
     fetch(url, {
       method: 'POST',
