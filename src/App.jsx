@@ -42,6 +42,7 @@ import Discussions from "./pages/Discuss"
 // import Start from "./components/core/Dashboard/AddCourse"
 
 function App() {
+  console.log("hellow world");
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { user } = useSelector((state) => state.profile)
@@ -183,5 +184,5 @@ function App() {
     </div>
   )
 }
-
+// this is my vercel deployment 2s
 export default App
