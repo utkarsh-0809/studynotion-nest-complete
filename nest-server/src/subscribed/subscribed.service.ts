@@ -134,7 +134,7 @@ export class SubscribedService {
           currDate.setFullYear(currDate.getFullYear()+1);
         else currDate.setMonth(currDate.getMonth()+4);
 
-        await this.userModel.findByIdAndUpdate(userId,{subscriptionExpires:currDate},{new:true});
+        await this.userModel.findByIdAndUpdate(userId,{subscriptionExpires:currDate});
         return { success: true, message: "Payment Verified" }
       }
     
