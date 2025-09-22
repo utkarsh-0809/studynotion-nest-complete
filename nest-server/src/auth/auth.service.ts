@@ -252,7 +252,7 @@ export class AuthService {
        await this.UserModel.updateOne(
          { token: token },
          { password: encryptedPassword },
-         { new: true }
+         
        )
        return{
          success: true,
@@ -280,7 +280,7 @@ export class AuthService {
             token: token,
             resetPasswordExpires: Date.now() + 3600000,
           },
-          { new: true }
+          { returnDocument: 'after' }
         )
         console.log("DETAILS", updatedDetails)
     

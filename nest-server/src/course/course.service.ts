@@ -132,7 +132,7 @@ export class CourseService {
               courses: newCourse._id,
             },
           },
-          { new: true }
+          { returnDocument: 'after' }
         )
         // Add the new course to the Categories
         const categoryDetails2 = await this.CategoryModel.findByIdAndUpdate(
@@ -142,7 +142,7 @@ export class CourseService {
               courses: newCourse._id,
             },
           },
-          { new: true }
+          { returnDocument: 'after' }
         )
         console.log("HEREEEEEEEE", categoryDetails2)
         // Return the new course and a success message
@@ -588,7 +588,7 @@ export class CourseService {
          const enrolledCourse = await this.courseModel.findOneAndUpdate(
            { _id: courseId },
            { $push: { studentsEnroled: userId } },
-           { new: true }
+           { returnDocument: 'after' }
          )
    
          if (!enrolledCourse) {
@@ -610,7 +610,7 @@ export class CourseService {
                courseProgress: courseProgress._id,
              },
            },
-           { new: true }
+           { returnDocument: 'after' }
          )
    
          console.log("Enrolled student: ", enrolledStudent)

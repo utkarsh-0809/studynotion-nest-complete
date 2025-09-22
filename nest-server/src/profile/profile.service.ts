@@ -99,7 +99,7 @@ export class ProfileService {
           await this.CourseModel.findByIdAndUpdate(
             courseId,
             { $pull: { studentsEnroled: id } },
-            { new: true }
+            { returnDocument: 'after' }
           )
         }
         // Now Delete User
@@ -139,7 +139,7 @@ export class ProfileService {
         const updatedProfile = await this.UserModel.findOneAndUpdate(
           { _id: userId },
           { image: image.secure_url },
-          { new: true }
+          { returnDocument: 'after' }
         )
         return {
           success: true,
